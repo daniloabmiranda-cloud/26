@@ -331,6 +331,7 @@ function PlanetaView() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
         <KPI t="Conversões" v={fmt(488)} s="Taxa: 12,73%" c={C.grn} />
         <KPI t="CPA" v={fB(9.35)} s="Custo por conversão" c={C.org} />
+        <KPI t="Cliques" v={fmt(2043)} s="CTR: 4,30%" c={C.acc} />
         <KPI t="Investimento" v={fB(4560.37)} s="Orçamento: R$ 150/dia" c={C.red} />
       </div>
 
