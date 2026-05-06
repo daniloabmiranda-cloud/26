@@ -38,7 +38,7 @@ function Badge({ s }) {
     bg = C.redD; tx = C.red; lb = "Inativa";
   }
   return (
-    <span style={{ background: bg, color: tx, padding: "3px 10px", borderRadius: 20, fontSize: 10, fontWeight: 700, whiteSpace: "nowrap" }}>
+    <span style={{ background: bg, color: tx, padding: "4px 12px", borderRadius: 20, fontSize: 13, fontWeight: 700, whiteSpace: "nowrap" }}>
       {lb}
     </span>
   );
@@ -48,16 +48,16 @@ function KPI({ t, v, s, c }) {
   return (
     <div style={{ background: "linear-gradient(135deg," + C.card + "," + C.card2 + ")", border: "1px solid " + C.border, borderRadius: 14, padding: "18px 20px", flex: "1 1 180px", minWidth: 160, position: "relative", overflow: "hidden" }}>
       <div style={{ position: "absolute", top: -18, right: -18, width: 72, height: 72, borderRadius: "50%", background: c || C.acc, opacity: 0.06 }} />
-      <div style={{ fontSize: 10, color: C.mut, textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 5, fontWeight: 700 }}>{t}</div>
-      <div style={{ fontSize: 24, fontWeight: 800, color: C.txt, letterSpacing: -0.5 }}>{v}</div>
-      {s ? <div style={{ fontSize: 11, color: C.dim, marginTop: 3 }}>{s}</div> : null}
+      <div style={{ fontSize: 13, color: C.mut, textTransform: "uppercase", letterSpacing: 1.2, marginBottom: 5, fontWeight: 700 }}>{t}</div>
+      <div style={{ fontSize: 28, fontWeight: 800, color: C.txt, letterSpacing: -0.5 }}>{v}</div>
+      {s ? <div style={{ fontSize: 14, color: C.dim, marginTop: 3 }}>{s}</div> : null}
     </div>
   );
 }
 
 function STitle({ children }) {
   return (
-    <h3 style={{ fontSize: 15, fontWeight: 700, color: C.txt, margin: "26px 0 12px", borderLeft: "3px solid " + C.acc, paddingLeft: 12 }}>
+    <h3 style={{ fontSize: 18, fontWeight: 700, color: C.txt, margin: "26px 0 12px", borderLeft: "3px solid " + C.acc, paddingLeft: 12 }}>
       {children}
     </h3>
   );
@@ -66,7 +66,7 @@ function STitle({ children }) {
 function CTip({ active, payload, label }) {
   if (!active || !payload || !payload.length) return null;
   return (
-    <div style={{ background: C.card, border: "1px solid " + C.border, borderRadius: 8, padding: "8px 12px", fontSize: 11 }}>
+    <div style={{ background: C.card, border: "1px solid " + C.border, borderRadius: 8, padding: "10px 14px", fontSize: 14 }}>
       <div style={{ color: C.dim, marginBottom: 3 }}>{label}</div>
       {payload.map(function (p, i) {
         return (
@@ -82,12 +82,12 @@ function CTip({ active, payload, label }) {
 function Tbl({ data, cols }) {
   return (
     <div style={{ overflowX: "auto", borderRadius: 10, border: "1px solid " + C.border, marginBottom: 8 }}>
-      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
         <thead>
           <tr>
             {cols.map(function (c, i) {
               return (
-                <th key={i} style={{ padding: "10px 12px", background: C.card2, color: C.mut, fontWeight: 700, textAlign: c.r ? "right" : "left", borderBottom: "1px solid " + C.border, whiteSpace: "nowrap", fontSize: 10, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                <th key={i} style={{ padding: "12px 14px", background: C.card2, color: C.mut, fontWeight: 700, textAlign: c.r ? "right" : "left", borderBottom: "1px solid " + C.border, whiteSpace: "nowrap", fontSize: 13, textTransform: "uppercase", letterSpacing: 0.5 }}>
                   {c.l}
                 </th>
               );
@@ -95,12 +95,18 @@ function Tbl({ data, cols }) {
           </tr>
         </thead>
         <tbody>
-          {data.map(function (row, ri) {
+          {data.length === 0 ? (
+            <tr>
+              <td colSpan={cols.length} style={{ padding: "24px 14px", color: C.dim, textAlign: "center", fontSize: 14, fontStyle: "italic" }}>
+                Nenhuma campanha encontrada com este filtro.
+              </td>
+            </tr>
+          ) : data.map(function (row, ri) {
             return (
               <tr key={ri} style={{ background: ri % 2 === 0 ? C.card : C.bg }}>
                 {cols.map(function (c, ci) {
                   return (
-                    <td key={ci} style={{ padding: "9px 12px", color: C.txt, borderBottom: "1px solid " + C.border, textAlign: c.r ? "right" : "left", whiteSpace: c.nw ? "nowrap" : "normal", maxWidth: c.mw || "none", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <td key={ci} style={{ padding: "11px 14px", color: C.txt, borderBottom: "1px solid " + C.border, textAlign: c.r ? "right" : "left", whiteSpace: c.nw ? "nowrap" : "normal", maxWidth: c.mw || "none", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {c.fn ? c.fn(row) : row[c.k]}
                     </td>
                   );
@@ -117,12 +123,65 @@ function Tbl({ data, cols }) {
 function ChartBox({ title, children, h }) {
   return (
     <div style={{ background: C.card, borderRadius: 12, padding: 18, border: "1px solid " + C.border }}>
-      {title ? <div style={{ fontSize: 12, fontWeight: 700, color: C.txt, marginBottom: 12 }}>{title}</div> : null}
+      {title ? <div style={{ fontSize: 15, fontWeight: 700, color: C.txt, marginBottom: 12 }}>{title}</div> : null}
       <ResponsiveContainer width="100%" height={h || 240}>
         {children}
       </ResponsiveContainer>
     </div>
   );
+}
+
+function StatusFilter({ value, onChange, activeCount, inactiveCount }) {
+  var options = [
+    { id: "active", label: "Ativas", count: activeCount, color: C.grn, bg: C.grnD },
+    { id: "inactive", label: "Inativas", count: inactiveCount, color: C.red, bg: C.redD },
+    { id: "all", label: "Todas", count: activeCount + inactiveCount, color: C.acc, bg: "rgba(59,130,246,0.15)" },
+  ];
+  return (
+    <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
+      {options.map(function (o) {
+        var selected = value === o.id;
+        return (
+          <button
+            key={o.id}
+            onClick={function () { onChange(o.id); }}
+            style={{
+              padding: "8px 18px",
+              border: selected ? "2px solid " + o.color : "2px solid " + C.border,
+              borderRadius: 10,
+              background: selected ? o.bg : "transparent",
+              color: selected ? o.color : C.dim,
+              cursor: "pointer",
+              fontSize: 14,
+              fontWeight: selected ? 700 : 500,
+              fontFamily: "inherit",
+              transition: "all 0.2s",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            {o.label}
+            <span style={{
+              background: selected ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)",
+              padding: "2px 8px",
+              borderRadius: 6,
+              fontSize: 13,
+              fontWeight: 700,
+            }}>
+              {o.count}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function filterCamps(data, filter) {
+  if (filter === "all") return data;
+  if (filter === "active") return data.filter(function (c) { return c.s === "active"; });
+  return data.filter(function (c) { return c.s !== "active"; });
 }
 
 /* ═══════════ DATA ═══════════ */
@@ -207,55 +266,129 @@ const marcSets = [
 
 const marcGMN = { sp: 732.61, imp: 51500, cl: 3850, calls: 20 };
 
+/* ═══════════ MARCH DATA (COMPARATIVO) ═══════════ */
+
+var marData = {
+  planeta: {
+    meta: { sp: 2751.66, reach: 393873, imp: 732046, conv: 487 },
+    search: { sp: 7266.45, cl: 1815, imp: 26829, ctr: 6.77, conv: 585, cpa: 12.42, cr: 32.23 },
+    pmax: { sp: 4555.89, cl: 2281, imp: 64451, ctr: 3.54, conv: 445, cpa: 10.24, cr: 13.26, convVal: 441 },
+    gmn: { sp: 1299.06, imp: 16600, cl: 1570, calls: 14 },
+    total: 15873.06,
+  },
+  havaianas: { meta: { sp: 2405.82, reach: 386316, imp: 1056921, conv: 991 }, total: 2405.82 },
+  usaflex: { meta: { sp: 2393.73, reach: 268879, imp: 720789, conv: 655 }, total: 2393.73 },
+  marcenaria: { meta: { sp: 1036.22, reach: 49179, imp: 79588, conv: 45 }, gmn: { sp: 772.49, imp: 21100, cl: 1120, calls: 17 }, total: 1808.71 },
+};
+var abrData = {
+  planeta: {
+    meta: { sp: 1997.03, reach: 296221, imp: 500013, conv: 248 },
+    search: { sp: 7278.19, cl: 1779, imp: 30196, ctr: 5.89, conv: 569, cpa: 12.79, cr: 31.98 },
+    pmax: { sp: 4560.37, cl: 2043, imp: 47502, ctr: 4.30, conv: 488, cpa: 9.35, cr: 12.73, convVal: 488 },
+    gmn: { sp: 1295.32, imp: 10400, cl: 996, calls: 23 },
+    total: 15130.91,
+  },
+  havaianas: { meta: { sp: 1866.19, reach: 367884, imp: 653708, conv: 794 }, total: 1866.19 },
+  usaflex: { meta: { sp: 1965.36, reach: 308584, imp: 510646, conv: 429 }, total: 1965.36 },
+  marcenaria: { meta: { sp: 517.98, reach: 21429, imp: 36767, conv: 32 }, gmn: { sp: 732.61, imp: 51500, cl: 3850, calls: 20 }, total: 1250.59 },
+};
+
+function pctVar(mar, abr) {
+  if (!mar || mar === 0) return null;
+  return ((abr - mar) / mar) * 100;
+}
+
+function fInt(n) {
+  if (n == null || isNaN(n)) return "–";
+  return Math.round(n).toLocaleString("pt-BR");
+}
+
+function CompareKPI({ title, marVal, abrVal, format, invert }) {
+  var marF = format === "brl" ? fB(marVal) : format === "pct" ? fP(marVal) : format === "int" ? fInt(marVal) : fmt(marVal);
+  var abrF = format === "brl" ? fB(abrVal) : format === "pct" ? fP(abrVal) : format === "int" ? fInt(abrVal) : fmt(abrVal);
+  var v = pctVar(marVal, abrVal);
+  var positive = invert ? v <= 0 : v >= 0;
+  var color = v === null ? C.dim : positive ? C.grn : C.red;
+  var arrow = v === null ? "" : v >= 0 ? "▲" : "▼";
+  return (
+    <div style={{ background: "linear-gradient(135deg," + C.card + "," + C.card2 + ")", border: "1px solid " + C.border, borderRadius: 14, padding: "16px 20px", flex: "1 1 200px", minWidth: 180 }}>
+      <div style={{ fontSize: 12, color: C.mut, textTransform: "uppercase", letterSpacing: 1, marginBottom: 8, fontWeight: 700 }}>{title}</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 12 }}>
+        <div>
+          <div style={{ fontSize: 11, color: C.dim, marginBottom: 2 }}>Mar</div>
+          <div style={{ fontSize: 18, fontWeight: 700, color: C.dim }}>{marF}</div>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div style={{ fontSize: 11, color: C.acc, marginBottom: 2 }}>Abr</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: C.txt }}>{abrF}</div>
+        </div>
+      </div>
+      {v !== null ? (
+        <div style={{ marginTop: 8, fontSize: 13, fontWeight: 700, color: color }}>
+          {arrow} {Math.abs(v).toFixed(1)}%
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 /* ═══════════ VIEWS ═══════════ */
 
 function OverviewView() {
-  const d = [
+  var dAbr = [
     { name: "Planeta Energia", meta: 1997, google: 11839, gmn: 1295, total: 15131, color: C.acc },
     { name: "Havaianas", meta: 1866, google: 0, gmn: 0, total: 1866, color: C.pnk },
     { name: "Usaflex", meta: 1965, google: 0, gmn: 0, total: 1965, color: C.pur },
     { name: "Masterplan Marc.", meta: 518, google: 0, gmn: 733, total: 1251, color: C.org },
   ];
-  var gt = d.reduce(function (a, b) { return a + b.total; }, 0);
+  var dComp = [
+    { name: "Planeta Energia", mar: 15873, abr: 15131, color: C.acc },
+    { name: "Havaianas", mar: 2406, abr: 1866, color: C.pnk },
+    { name: "Usaflex", mar: 2394, abr: 1965, color: C.pur },
+    { name: "Masterplan Marc.", mar: 1809, abr: 1251, color: C.org },
+  ];
+  var gtMar = 15873 + 2406 + 2394 + 1809;
+  var gtAbr = dAbr.reduce(function (a, b) { return a + b.total; }, 0);
 
   return (
     <div>
+      <STitle>Comparativo Geral — Março vs Abril 2026</STitle>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
-        <KPI t="Investimento Total (Geral)" v={fB(gt)} s="4 empresas • Abril 2026" c={C.acc} />
-        <KPI t="Maior Investimento" v="Planeta Energia" s={fB(15131)} c={C.grn} />
-        <KPI t="Conversões Google" v={fmt(1057)} s="Pesquisa (569) + PMax (488)" c={C.pur} />
-        <KPI t="Total Conversas Meta" v={fmt(1503)} s="WhatsApp / Messenger" c={C.cyn} />
+        <CompareKPI title="Investimento Total" marVal={gtMar} abrVal={gtAbr} format="brl" invert={true} />
+        <CompareKPI title="Conversões Google" marVal={585 + 445} abrVal={569 + 488} format="int" />
+        <CompareKPI title="Conversas Meta" marVal={487 + 991 + 655 + 45} abrVal={248 + 794 + 429 + 32} format="" />
+        <CompareKPI title="Chamadas GMN" marVal={14 + 17} abrVal={23 + 20} format="" />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-        <ChartBox title="Investimento por Empresa">
-          <BarChart data={d} barSize={34}>
+        <ChartBox title="Investimento por Empresa — Março vs Abril">
+          <BarChart data={dComp} barGap={6} barSize={22}>
             <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
-            <XAxis dataKey="name" tick={{ fill: C.dim, fontSize: 10 }} />
-            <YAxis tick={{ fill: C.dim, fontSize: 10 }} tickFormatter={function (v) { return "R$" + (v / 1000).toFixed(0) + "K"; }} />
+            <XAxis dataKey="name" tick={{ fill: C.dim, fontSize: 13 }} />
+            <YAxis tick={{ fill: C.dim, fontSize: 13 }} tickFormatter={function (v) { return "R$" + (v / 1000).toFixed(0) + "K"; }} />
             <Tooltip content={<CTip />} />
-            <Bar dataKey="total" name="Total (R$)" radius={[5, 5, 0, 0]}>
-              {d.map(function (e, i) { return <Cell key={i} fill={e.color} />; })}
-            </Bar>
+            <Legend wrapperStyle={{ fontSize: 13 }} />
+            <Bar dataKey="mar" name="Março" fill="#64748B" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="abr" name="Abril" fill={C.acc} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ChartBox>
-        <ChartBox title="Distribuição do Orçamento">
+        <ChartBox title="Distribuição Abril">
           <PieChart>
-            <Pie data={d.map(function (e) { return { name: e.name, value: e.total }; })} dataKey="value" cx="50%" cy="50%" outerRadius={85} innerRadius={42} paddingAngle={3} strokeWidth={0}>
-              {d.map(function (e, i) { return <Cell key={i} fill={e.color} />; })}
+            <Pie data={dAbr.map(function (e) { return { name: e.name, value: e.total }; })} dataKey="value" cx="50%" cy="50%" outerRadius={85} innerRadius={42} paddingAngle={3} strokeWidth={0}>
+              {dAbr.map(function (e, i) { return <Cell key={i} fill={e.color} />; })}
             </Pie>
             <Tooltip content={<CTip />} />
-            <Legend wrapperStyle={{ fontSize: 10 }} />
+            <Legend wrapperStyle={{ fontSize: 13 }} />
           </PieChart>
         </ChartBox>
       </div>
-      <STitle>Comparativo de Canais por Empresa</STitle>
+      <STitle>Canais por Empresa — Abril</STitle>
       <ChartBox title="">
-        <BarChart data={d} barGap={4} barSize={18}>
+        <BarChart data={dAbr} barGap={4} barSize={18}>
           <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
-          <XAxis dataKey="name" tick={{ fill: C.dim, fontSize: 10 }} />
-          <YAxis tick={{ fill: C.dim, fontSize: 10 }} tickFormatter={function (v) { return "R$" + (v / 1000).toFixed(0) + "K"; }} />
+          <XAxis dataKey="name" tick={{ fill: C.dim, fontSize: 13 }} />
+          <YAxis tick={{ fill: C.dim, fontSize: 13 }} tickFormatter={function (v) { return "R$" + (v / 1000).toFixed(0) + "K"; }} />
           <Tooltip content={<CTip />} />
-          <Legend wrapperStyle={{ fontSize: 10 }} />
+          <Legend wrapperStyle={{ fontSize: 13 }} />
           <Bar dataKey="meta" name="Meta Ads" fill={C.acc} radius={[4, 4, 0, 0]} />
           <Bar dataKey="google" name="Google Ads" fill={C.grn} radius={[4, 4, 0, 0]} />
           <Bar dataKey="gmn" name="Google Maps" fill={C.org} radius={[4, 4, 0, 0]} />
@@ -272,6 +405,7 @@ function PlanetaView() {
   var tAll = tMeta + tGoogle + planetaGoogle.gmn.sp;
   var ac = planetaMetaCamps.filter(function (c) { return c.s === "active"; }).length;
   var ic = planetaMetaCamps.length - ac;
+  const [campFilter, setCampFilter] = useState("active");
   var spCh = [
     { name: "Meta Ads", value: Math.round(tMeta) },
     { name: "Google Pesquisa", value: Math.round(planetaGoogle.search.sp) },
@@ -281,11 +415,12 @@ function PlanetaView() {
 
   return (
     <div>
+      <STitle>Comparativo Março vs Abril</STitle>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
-        <KPI t="Investimento Total" v={fB(tAll)} s="Meta + Google + GMN" c={C.acc} />
-        <KPI t="Conversões Google" v={fmt(tGConv)} s={"CPA médio: " + fB(tGoogle / tGConv)} c={C.grn} />
-        <KPI t="Conversas Meta" v={fmt(248)} s="WhatsApp iniciadas" c={C.pur} />
-        <KPI t="Cliques Google" v={fmt(planetaGoogle.search.cl + planetaGoogle.pmax.cl)} s={"CTR médio: " + fP((planetaGoogle.search.ctr + planetaGoogle.pmax.ctr) / 2)} c={C.org} />
+        <CompareKPI title="Investimento Total" marVal={marData.planeta.total} abrVal={tAll} format="brl" invert={true} />
+        <CompareKPI title="Conversões Google" marVal={marData.planeta.search.conv + marData.planeta.pmax.conv} abrVal={tGConv} format="int" />
+        <CompareKPI title="Conversas Meta" marVal={marData.planeta.meta.conv} abrVal={248} format="" />
+        <CompareKPI title="Chamadas GMN" marVal={marData.planeta.gmn.calls} abrVal={planetaGoogle.gmn.calls} format="" />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 8 }}>
         <ChartBox title="Distribuição de Investimento por Canal">
@@ -294,26 +429,26 @@ function PlanetaView() {
               {spCh.map(function (_, i) { return <Cell key={i} fill={PC[i]} />; })}
             </Pie>
             <Tooltip content={<CTip />} />
-            <Legend wrapperStyle={{ fontSize: 10 }} />
+            <Legend wrapperStyle={{ fontSize: 13 }} />
           </PieChart>
         </ChartBox>
         <ChartBox title="Google Ads — Conversões por Campanha">
           <BarChart data={[{ name: "Pesquisa", conv: 569 }, { name: "PMax", conv: 488 }]} barSize={44}>
             <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
-            <XAxis dataKey="name" tick={{ fill: C.dim, fontSize: 11 }} />
-            <YAxis tick={{ fill: C.dim, fontSize: 11 }} />
+            <XAxis dataKey="name" tick={{ fill: C.dim, fontSize: 13 }} />
+            <YAxis tick={{ fill: C.dim, fontSize: 13 }} />
             <Tooltip content={<CTip />} />
             <Bar dataKey="conv" name="Conversões" fill={C.acc} radius={[5, 5, 0, 0]} />
           </BarChart>
         </ChartBox>
       </div>
 
-      <STitle>Google Ads — Pesquisa</STitle>
+      <STitle>Google Ads — Pesquisa (Mar vs Abr)</STitle>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
-        <KPI t="Conversões" v={fmt(569)} s="Taxa: 31,98%" c={C.grn} />
-        <KPI t="CPA" v={fB(12.79)} s="Custo por conversão" c={C.org} />
-        <KPI t="Cliques" v={fmt(1779)} s="CTR: 5,89%" c={C.acc} />
-        <KPI t="Investimento" v={fB(7278.19)} s="Orçamento: R$ 280/dia" c={C.red} />
+        <CompareKPI title="Conversões" marVal={585} abrVal={569} format="int" />
+        <CompareKPI title="CPA" marVal={12.42} abrVal={12.79} format="brl" invert={true} />
+        <CompareKPI title="Cliques" marVal={1815} abrVal={1779} format="int" />
+        <CompareKPI title="Investimento" marVal={7266.45} abrVal={7278.19} format="brl" invert={true} />
       </div>
 
       <STitle>Top Palavras-chave (Google Pesquisa)</STitle>
@@ -327,20 +462,20 @@ function PlanetaView() {
         { l: "Taxa Conv.", r: true, fn: function (r) { return fP(r.cr); } },
       ]} />
 
-      <STitle>Google Ads — Performance Max</STitle>
+      <STitle>Google Ads — Performance Max (Mar vs Abr)</STitle>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
-        <KPI t="Conversões" v={fmt(488)} s="Taxa: 12,73%" c={C.grn} />
-        <KPI t="CPA" v={fB(9.35)} s="Custo por conversão" c={C.org} />
-        <KPI t="Cliques" v={fmt(2043)} s="CTR: 4,30%" c={C.acc} />
-        <KPI t="Investimento" v={fB(4560.37)} s="Orçamento: R$ 150/dia" c={C.red} />
+        <CompareKPI title="Conversões" marVal={445} abrVal={488} format="int" />
+        <CompareKPI title="CPA" marVal={10.24} abrVal={9.35} format="brl" invert={true} />
+        <CompareKPI title="Cliques" marVal={2281} abrVal={2043} format="int" />
+        <CompareKPI title="Investimento" marVal={4555.89} abrVal={4560.37} format="brl" invert={true} />
       </div>
 
-      <STitle>Google Maps — Anúncios (GMN Pago)</STitle>
+      <STitle>Google Maps — GMN Pago (Mar vs Abr)</STitle>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
-        <KPI t="Gasto GMN" v={fB(1295.32)} s="R$ 50/dia" c={C.acc} />
-        <KPI t="Impressões" v={fmt(10400)} c={C.cyn} />
-        <KPI t="Cliques" v={fmt(996)} c={C.grn} />
-        <KPI t="Chamadas" v="23" c={C.org} />
+        <CompareKPI title="Gasto GMN" marVal={1299.06} abrVal={1295.32} format="brl" invert={true} />
+        <CompareKPI title="Impressões" marVal={16600} abrVal={10400} format="" />
+        <CompareKPI title="Cliques" marVal={1570} abrVal={996} format="int" />
+        <CompareKPI title="Chamadas" marVal={14} abrVal={23} format="" />
       </div>
 
       <STitle>Google Maps — Perfil Orgânico (Abril vs Março)</STitle>
@@ -358,20 +493,21 @@ function PlanetaView() {
           l: "Variação", r: true, fn: function (r) {
             var color = r.v >= 0 ? C.grn : C.red;
             var arrow = r.v >= 0 ? "▲" : "▼";
-            return <span style={{ color: color, fontWeight: 700 }}>{arrow} {Math.abs(r.v).toFixed(2)}%</span>;
+            return <span style={{ color: color, fontWeight: 700, fontSize: 14 }}>{arrow} {Math.abs(r.v).toFixed(2)}%</span>;
           }
         },
       ]} />
 
       <STitle>{"Meta Ads — Campanhas (" + ac + " ativas / " + ic + " inativas)"}</STitle>
-      <Tbl data={planetaMetaCamps} cols={[
-        { l: "Campanha", fn: function (r) { return <span style={{ fontSize: 11 }}>{r.n}</span>; }, mw: 260 },
+      <StatusFilter value={campFilter} onChange={setCampFilter} activeCount={ac} inactiveCount={ic} />
+      <Tbl data={filterCamps(planetaMetaCamps, campFilter)} cols={[
+        { l: "Campanha", fn: function (r) { return <span style={{ fontSize: 14 }}>{r.n}</span>; }, mw: 260 },
         { l: "Status", fn: function (r) { return <Badge s={r.s} />; }, nw: true },
         { l: "Invest.", r: true, nw: true, fn: function (r) { return fB(r.sp); } },
         { l: "Alcance", r: true, fn: function (r) { return fmt(r.rc); } },
         { l: "Impr.", r: true, fn: function (r) { return fmt(r.imp); } },
         { l: "Resultados", r: true, fn: function (r) { return r.res ? fmt(r.res) : "–"; } },
-        { l: "Tipo", fn: function (r) { return <span style={{ fontSize: 10, color: C.dim }}>{r.ind}</span>; } },
+        { l: "Tipo", fn: function (r) { return <span style={{ fontSize: 13, color: C.dim }}>{r.ind}</span>; } },
         { l: "CPR", r: true, nw: true, fn: function (r) { return r.cpr ? fB(r.cpr) : "–"; } },
       ]} />
     </div>
@@ -383,23 +519,25 @@ function HavaianasView() {
   var tLc = havCamps.reduce(function (a, b) { return a + (b.lc || 0); }, 0);
   var ac = havCamps.filter(function (c) { return c.s === "active"; }).length;
   var ic = havCamps.length - ac;
+  const [campFilter, setCampFilter] = useState("active");
   var barData = havCamps.map(function (c) { return { name: c.n.length > 24 ? c.n.substring(0, 24) + "..." : c.n, spend: c.sp }; });
 
   return (
     <div>
+      <STitle>Comparativo Março vs Abril</STitle>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
-        <KPI t="Investimento Total" v={fB(tSp)} s="Abril 2026" c={C.pnk} />
-        <KPI t="Conversas WhatsApp" v={fmt(794)} s={"CPR: " + fB(891.27 / 709)} c={C.grn} />
-        <KPI t="Alcance Total" v={fmt(367884)} s={fmt(653708) + " impressões"} c={C.cyn} />
-        <KPI t="Cliques no Link" v={fmt(tLc)} c={C.acc} />
+        <CompareKPI title="Investimento Meta" marVal={marData.havaianas.meta.sp} abrVal={tSp} format="brl" invert={true} />
+        <CompareKPI title="Conversas WhatsApp" marVal={marData.havaianas.meta.conv} abrVal={794} format="" />
+        <CompareKPI title="Alcance" marVal={marData.havaianas.meta.reach} abrVal={367884} format="" />
+        <CompareKPI title="Cliques no Link" marVal={6330} abrVal={tLc} format="int" />
         <KPI t="Vis. Landing Page" v={fmt(728)} s="Campanha HavaBazar" c={C.pur} />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 14, marginBottom: 8 }}>
         <ChartBox title="Investimento por Campanha">
           <BarChart data={barData} barSize={22} layout="vertical">
             <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
-            <XAxis type="number" tick={{ fill: C.dim, fontSize: 10 }} />
-            <YAxis type="category" dataKey="name" tick={{ fill: C.dim, fontSize: 9 }} width={150} />
+            <XAxis type="number" tick={{ fill: C.dim, fontSize: 13 }} />
+            <YAxis type="category" dataKey="name" tick={{ fill: C.dim, fontSize: 12 }} width={150} />
             <Tooltip content={<CTip />} />
             <Bar dataKey="spend" name="Invest. (R$)" fill={C.pnk} radius={[0, 5, 5, 0]} />
           </BarChart>
@@ -411,19 +549,20 @@ function HavaianasView() {
               <Cell fill={C.red} />
             </Pie>
             <Tooltip content={<CTip />} />
-            <Legend wrapperStyle={{ fontSize: 10 }} />
+            <Legend wrapperStyle={{ fontSize: 13 }} />
           </PieChart>
         </ChartBox>
       </div>
       <STitle>{"Campanhas Meta Ads (" + ac + " ativas / " + ic + " inativas)"}</STitle>
-      <Tbl data={havCamps} cols={[
-        { l: "Campanha", fn: function (r) { return <span style={{ fontSize: 11 }}>{r.n}</span>; }, mw: 260 },
+      <StatusFilter value={campFilter} onChange={setCampFilter} activeCount={ac} inactiveCount={ic} />
+      <Tbl data={filterCamps(havCamps, campFilter)} cols={[
+        { l: "Campanha", fn: function (r) { return <span style={{ fontSize: 14 }}>{r.n}</span>; }, mw: 260 },
         { l: "Status", fn: function (r) { return <Badge s={r.s} />; }, nw: true },
         { l: "Invest.", r: true, nw: true, fn: function (r) { return fB(r.sp); } },
         { l: "Alcance", r: true, fn: function (r) { return fmt(r.rc); } },
         { l: "Impr.", r: true, fn: function (r) { return fmt(r.imp); } },
         { l: "Resultados", r: true, fn: function (r) { return r.res ? fmt(r.res) : "–"; } },
-        { l: "Tipo", fn: function (r) { return <span style={{ fontSize: 10, color: C.dim }}>{r.ind}</span>; } },
+        { l: "Tipo", fn: function (r) { return <span style={{ fontSize: 13, color: C.dim }}>{r.ind}</span>; } },
         { l: "CPM", r: true, nw: true, fn: function (r) { return r.cpm ? fB(r.cpm) : "–"; } },
         { l: "CTR", r: true, fn: function (r) { return r.ctr ? fP(r.ctr) : "–"; } },
       ]} />
@@ -438,15 +577,17 @@ function UsaflexView() {
   var tConvR = convC.reduce(function (a, b) { return a + b.conv; }, 0);
   var ac = usaCamps.filter(function (c) { return c.s === "active"; }).length;
   var ic = usaCamps.length - ac;
+  const [campFilter, setCampFilter] = useState("active");
   var pieData = usaCamps.map(function (c) { return { name: c.n.length > 20 ? c.n.substring(0, 20) + "..." : c.n, value: Math.round(c.sp) }; });
   var convBarData = convC.map(function (c) { return { name: c.n.length > 18 ? c.n.substring(0, 18) + "..." : c.n, conversas: c.conv }; });
 
   return (
     <div>
+      <STitle>Comparativo Março vs Abril</STitle>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
-        <KPI t="Investimento Total" v={fB(tSp)} s="Abril 2026" c={C.acc} />
-        <KPI t="Conversas WhatsApp" v={fmt(tConvR)} s={"CPR: " + fB(tConvSp / tConvR)} c={C.grn} />
-        <KPI t="Landing Page Views" v={fmt(2341)} s="Campanhas Bazar" c={C.pur} />
+        <CompareKPI title="Investimento Meta" marVal={marData.usaflex.meta.sp} abrVal={tSp} format="brl" invert={true} />
+        <CompareKPI title="Conversas WhatsApp" marVal={marData.usaflex.meta.conv} abrVal={tConvR} format="" />
+        <CompareKPI title="Alcance" marVal={marData.usaflex.meta.reach} abrVal={308584} format="" />
         <KPI t="Campanhas Ativas" v={ac} s={ic + " inativas"} c={C.org} />
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 8 }}>
@@ -456,14 +597,14 @@ function UsaflexView() {
               {pieData.map(function (_, i) { return <Cell key={i} fill={PC[i % PC.length]} />; })}
             </Pie>
             <Tooltip content={<CTip />} />
-            <Legend wrapperStyle={{ fontSize: 9 }} />
+            <Legend wrapperStyle={{ fontSize: 12 }} />
           </PieChart>
         </ChartBox>
         <ChartBox title="Conversas por Campanha (WPP)">
           <BarChart data={convBarData} barSize={28}>
             <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
-            <XAxis dataKey="name" tick={{ fill: C.dim, fontSize: 9 }} angle={-15} textAnchor="end" height={55} />
-            <YAxis tick={{ fill: C.dim, fontSize: 10 }} />
+            <XAxis dataKey="name" tick={{ fill: C.dim, fontSize: 12 }} angle={-15} textAnchor="end" height={55} />
+            <YAxis tick={{ fill: C.dim, fontSize: 13 }} />
             <Tooltip content={<CTip />} />
             <Bar dataKey="conversas" name="Conversas" fill={C.grn} radius={[5, 5, 0, 0]} />
           </BarChart>
@@ -492,41 +633,42 @@ function UsaflexView() {
         {
           l: "Inter. Abr", r: true, fn: function (r) {
             var color = r.intA >= r.intM ? C.grn : C.red;
-            return <span style={{ color: color, fontWeight: 600 }}>{fmt(r.intA)}</span>;
+            return <span style={{ color: color, fontWeight: 700, fontSize: 14 }}>{fmt(r.intA)}</span>;
           }
         },
         { l: "Cham. Mar", r: true, fn: function (r) { return fmt(r.chamM); } },
         {
           l: "Cham. Abr", r: true, fn: function (r) {
             var color = r.chamA >= r.chamM ? C.grn : C.red;
-            return <span style={{ color: color, fontWeight: 600 }}>{fmt(r.chamA)}</span>;
+            return <span style={{ color: color, fontWeight: 700, fontSize: 14 }}>{fmt(r.chamA)}</span>;
           }
         },
         { l: "Rotas Mar", r: true, fn: function (r) { return fmt(r.rotM); } },
         {
           l: "Rotas Abr", r: true, fn: function (r) {
             var color = r.rotA >= r.rotM ? C.grn : C.red;
-            return <span style={{ color: color, fontWeight: 600 }}>{fmt(r.rotA)}</span>;
+            return <span style={{ color: color, fontWeight: 700, fontSize: 14 }}>{fmt(r.rotA)}</span>;
           }
         },
         { l: "Cliq. Mar", r: true, fn: function (r) { return fmt(r.cliM); } },
         {
           l: "Cliq. Abr", r: true, fn: function (r) {
             var color = r.cliA >= r.cliM ? C.grn : C.red;
-            return <span style={{ color: color, fontWeight: 600 }}>{fmt(r.cliA)}</span>;
+            return <span style={{ color: color, fontWeight: 700, fontSize: 14 }}>{fmt(r.cliA)}</span>;
           }
         },
       ]} />
 
       <STitle>{"Meta Ads — Campanhas (" + ac + " ativas / " + ic + " inativas)"}</STitle>
-      <Tbl data={usaCamps} cols={[
-        { l: "Campanha", fn: function (r) { return <span style={{ fontSize: 11 }}>{r.n}</span>; }, mw: 260 },
+      <StatusFilter value={campFilter} onChange={setCampFilter} activeCount={ac} inactiveCount={ic} />
+      <Tbl data={filterCamps(usaCamps, campFilter)} cols={[
+        { l: "Campanha", fn: function (r) { return <span style={{ fontSize: 14 }}>{r.n}</span>; }, mw: 260 },
         { l: "Status", fn: function (r) { return <Badge s={r.s} />; }, nw: true },
         { l: "Invest.", r: true, nw: true, fn: function (r) { return fB(r.sp); } },
         { l: "Alcance", r: true, fn: function (r) { return fmt(r.rc); } },
         { l: "Impr.", r: true, fn: function (r) { return fmt(r.imp); } },
         { l: "Resultados", r: true, fn: function (r) { return r.res ? fmt(r.res) : "–"; } },
-        { l: "Tipo", fn: function (r) { return <span style={{ fontSize: 10, color: C.dim }}>{r.ind}</span>; } },
+        { l: "Tipo", fn: function (r) { return <span style={{ fontSize: 13, color: C.dim }}>{r.ind}</span>; } },
         { l: "Conversas", r: true, fn: function (r) { return fmt(r.conv); } },
       ]} />
     </div>
@@ -536,27 +678,35 @@ function UsaflexView() {
 function MarcenariaView() {
   var tMeta = marcCamps.reduce(function (a, b) { return a + b.sp; }, 0);
   var tAll = tMeta + marcGMN.sp;
+  var ac = marcCamps.filter(function (c) { return c.s === "active"; }).length;
+  var ic = marcCamps.length - ac;
+  const [campFilter, setCampFilter] = useState("active");
+  var acS = marcSets.filter(function (c) { return c.s === "active"; }).length;
+  var icS = marcSets.length - acS;
+  const [setFilter, setSetFilter] = useState("all");
 
   return (
     <div>
+      <STitle>Comparativo Março vs Abril</STitle>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 18 }}>
-        <KPI t="Investimento Total" v={fB(tAll)} s="Meta + Google Maps" c={C.org} />
-        <KPI t="Conversas WhatsApp" v={fmt(32)} s={"CPR: " + fB(tMeta / 32)} c={C.grn} />
-        <KPI t="Alcance Meta" v={fmt(21429)} s={fmt(36767) + " impressões"} c={C.cyn} />
-        <KPI t="Cliques no Link" v={fmt(224)} s="Meta Ads" c={C.acc} />
+        <CompareKPI title="Investimento Total" marVal={marData.marcenaria.total} abrVal={tAll} format="brl" invert={true} />
+        <CompareKPI title="Conversas Meta" marVal={marData.marcenaria.meta.conv} abrVal={32} format="" />
+        <CompareKPI title="Chamadas GMN" marVal={marData.marcenaria.gmn.calls} abrVal={marcGMN.calls} format="" />
+        <CompareKPI title="Cliques GMN" marVal={marData.marcenaria.gmn.cl} abrVal={marcGMN.cl} format="int" />
       </div>
 
-      <STitle>Google Maps — Perfil da Empresa</STitle>
+      <STitle>Google Maps — Comparativo Mar vs Abr</STitle>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 14 }}>
-        <KPI t="Gasto GMN" v={fB(732.61)} s="R$ 30/dia" c={C.acc} />
-        <KPI t="Impressões" v={fmt(51500)} c={C.cyn} />
-        <KPI t="Cliques" v={fmt(3850)} c={C.grn} />
-        <KPI t="Chamadas" v="20" c={C.org} />
+        <CompareKPI title="Gasto GMN" marVal={marData.marcenaria.gmn.sp} abrVal={732.61} format="brl" invert={true} />
+        <CompareKPI title="Impressões" marVal={marData.marcenaria.gmn.imp} abrVal={51500} format="" />
+        <CompareKPI title="Cliques" marVal={marData.marcenaria.gmn.cl} abrVal={3850} format="int" />
+        <CompareKPI title="Chamadas" marVal={marData.marcenaria.gmn.calls} abrVal={20} format="" />
       </div>
 
-      <STitle>Meta Ads — Campanhas</STitle>
-      <Tbl data={marcCamps} cols={[
-        { l: "Campanha", fn: function (r) { return <span style={{ fontSize: 11 }}>{r.n}</span>; }, mw: 300 },
+      <STitle>{"Meta Ads — Campanhas (" + ac + " ativas / " + ic + " inativas)"}</STitle>
+      <StatusFilter value={campFilter} onChange={setCampFilter} activeCount={ac} inactiveCount={ic} />
+      <Tbl data={filterCamps(marcCamps, campFilter)} cols={[
+        { l: "Campanha", fn: function (r) { return <span style={{ fontSize: 14 }}>{r.n}</span>; }, mw: 300 },
         { l: "Status", fn: function (r) { return <Badge s={r.s} />; }, nw: true },
         { l: "Invest.", r: true, nw: true, fn: function (r) { return fB(r.sp); } },
         { l: "Alcance", r: true, fn: function (r) { return fmt(r.rc); } },
@@ -571,8 +721,8 @@ function MarcenariaView() {
         <ChartBox title="Resultados por Conjunto" h={180}>
           <BarChart data={marcSets.map(function (s) { return { name: s.n.length > 22 ? s.n.substring(0, 22) + "..." : s.n, res: s.res || 0 }; })} barSize={28} layout="vertical">
             <CartesianGrid strokeDasharray="3 3" stroke={C.border} />
-            <XAxis type="number" tick={{ fill: C.dim, fontSize: 10 }} />
-            <YAxis type="category" dataKey="name" tick={{ fill: C.dim, fontSize: 9 }} width={160} />
+            <XAxis type="number" tick={{ fill: C.dim, fontSize: 13 }} />
+            <YAxis type="category" dataKey="name" tick={{ fill: C.dim, fontSize: 12 }} width={160} />
             <Tooltip content={<CTip />} />
             <Bar dataKey="res" name="Conversas" fill={C.org} radius={[0, 5, 5, 0]} />
           </BarChart>
@@ -583,11 +733,12 @@ function MarcenariaView() {
               {marcSets.map(function (_, i) { return <Cell key={i} fill={PC[i]} />; })}
             </Pie>
             <Tooltip content={<CTip />} />
-            <Legend wrapperStyle={{ fontSize: 10 }} />
+            <Legend wrapperStyle={{ fontSize: 13 }} />
           </PieChart>
         </ChartBox>
       </div>
-      <Tbl data={marcSets} cols={[
+      <StatusFilter value={setFilter} onChange={setSetFilter} activeCount={acS} inactiveCount={icS} />
+      <Tbl data={filterCamps(marcSets, setFilter)} cols={[
         { l: "Conjunto de Anúncios", k: "n" },
         { l: "Status", fn: function (r) { return <Badge s={r.s} />; }, nw: true },
         { l: "Invest.", r: true, nw: true, fn: function (r) { return fB(r.sp); } },
@@ -602,7 +753,7 @@ function MarcenariaView() {
 
 function LegendTag({ label, color, bg }) {
   return (
-    <span style={{ display: "inline-block", background: bg || "rgba(59,130,246,0.12)", color: color || C.acc, padding: "3px 10px", borderRadius: 6, fontSize: 11, fontWeight: 700, fontFamily: "'DM Sans', monospace", marginRight: 6, marginBottom: 4 }}>
+    <span style={{ display: "inline-block", background: bg || "rgba(59,130,246,0.12)", color: color || C.acc, padding: "3px 10px", borderRadius: 6, fontSize: 14, fontWeight: 700, fontFamily: "'DM Sans', monospace", marginRight: 6, marginBottom: 4 }}>
       {label}
     </span>
   );
@@ -613,7 +764,7 @@ function LegendSection({ title, icon, children }) {
     <div style={{ background: C.card, border: "1px solid " + C.border, borderRadius: 14, padding: "22px 24px", marginBottom: 16 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
         <span style={{ fontSize: 20 }}>{icon}</span>
-        <div style={{ fontSize: 15, fontWeight: 700, color: C.txt }}>{title}</div>
+        <div style={{ fontSize: 18, fontWeight: 700, color: C.txt }}>{title}</div>
       </div>
       {children}
     </div>
@@ -627,8 +778,8 @@ function LegendRow({ tag, tagColor, tagBg, title, desc }) {
         <LegendTag label={tag} color={tagColor} bg={tagBg} />
       </div>
       <div>
-        <div style={{ fontSize: 13, fontWeight: 700, color: C.txt, marginBottom: 3 }}>{title}</div>
-        <div style={{ fontSize: 12, color: C.dim, lineHeight: 1.5 }}>{desc}</div>
+        <div style={{ fontSize: 15, fontWeight: 700, color: C.txt, marginBottom: 3 }}>{title}</div>
+        <div style={{ fontSize: 14, color: C.dim, lineHeight: 1.6 }}>{desc}</div>
       </div>
     </div>
   );
@@ -638,8 +789,8 @@ function LegendaView() {
   return (
     <div>
       <div style={{ background: "linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.06))", border: "1px solid " + C.border, borderRadius: 14, padding: "22px 24px", marginBottom: 20 }}>
-        <div style={{ fontSize: 16, fontWeight: 800, color: C.txt, marginBottom: 6 }}>Legenda de Nomenclatura — Públicos-Alvo e Estratégias</div>
-        <div style={{ fontSize: 12, color: C.dim, lineHeight: 1.6 }}>
+        <div style={{ fontSize: 20, fontWeight: 800, color: C.txt, marginBottom: 6 }}>Legenda de Nomenclatura — Públicos-Alvo e Estratégias</div>
+        <div style={{ fontSize: 14, color: C.dim, lineHeight: 1.6 }}>
           Guia de referência rápida para interpretar os nomes das campanhas de tráfego pago. A nomenclatura segue o padrão: <span style={{ color: C.acc, fontWeight: 600 }}>[TEMPERATURA]-[SEGMENTAÇÃO]-[CANAL]-[LOJA]-[DATA]</span>
         </div>
       </div>
@@ -661,7 +812,7 @@ function LegendaView() {
           desc="Usuários com alta intenção de compra: adicionaram ao carrinho, visitaram páginas de produto ou já são clientes. Objetivo: converter em venda direta. Campanhas de conversão, catálogo de produtos ou mensagens direcionadas. Maior custo por impressão, porém maior taxa de conversão."
         />
         <div style={{ padding: "12px 0 0" }}>
-          <div style={{ fontSize: 11, color: C.mut, fontStyle: "italic" }}>
+          <div style={{ fontSize: 13, color: C.mut, fontStyle: "italic" }}>
             Obs.: A tag [P1] indica campanha prioritária (nível 1 de investimento), podendo combinar públicos mornos e quentes no mesmo conjunto.
           </div>
         </div>
@@ -748,10 +899,10 @@ function LegendaView() {
 
       <LegendSection title="Exemplo de Leitura" icon="📖">
         <div style={{ background: C.bg, borderRadius: 10, padding: "16px 20px", marginBottom: 8 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: C.acc, fontFamily: "monospace", marginBottom: 10 }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: C.acc, fontFamily: "monospace", marginBottom: 10 }}>
             [MORNO]-[WPP-VENDA]-[CASTANHEIRA]-[23/04]
           </div>
-          <div style={{ fontSize: 12, color: C.dim, lineHeight: 1.7 }}>
+          <div style={{ fontSize: 14, color: C.dim, lineHeight: 1.7 }}>
             <span style={{ color: "#FBBF24", fontWeight: 600 }}>MORNO</span> → Público que já conhece a marca (meio de funil)<br />
             <span style={{ color: "#25D366", fontWeight: 600 }}>WPP</span> → Conversão direcionada ao WhatsApp<br />
             <span style={{ color: "#EF4444", fontWeight: 600 }}>VENDA</span> → Objetivo final de venda direta<br />
@@ -760,10 +911,10 @@ function LegendaView() {
           </div>
         </div>
         <div style={{ background: C.bg, borderRadius: 10, padding: "16px 20px" }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: C.acc, fontFamily: "monospace", marginBottom: 10 }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: C.acc, fontFamily: "monospace", marginBottom: 10 }}>
             [CATALAGO]-[ADV+]-[COMPRA]-[15/04]
           </div>
-          <div style={{ fontSize: 12, color: C.dim, lineHeight: 1.7 }}>
+          <div style={{ fontSize: 14, color: C.dim, lineHeight: 1.7 }}>
             <span style={{ color: "#FBBF24", fontWeight: 600 }}>CATALAGO</span> → Campanha de catálogo dinâmico de produtos<br />
             <span style={{ color: "#FB923C", fontWeight: 600 }}>ADV+</span> → Segmentação Advantage+ (automática do Meta)<br />
             <span style={{ color: "#EF4444", fontWeight: 600 }}>COMPRA</span> → Otimizada para evento de compra no site<br />
@@ -795,10 +946,10 @@ export default function Dashboard() {
 
       <div style={{ background: "linear-gradient(135deg," + C.card + ",#080C16)", borderBottom: "1px solid " + C.border, padding: "18px 24px 0", position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-          <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(135deg," + C.acc + "," + C.pur + ")", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, fontWeight: 800, color: "#fff" }}>M</div>
+          <div style={{ width: 38, height: 38, borderRadius: 10, background: "linear-gradient(135deg," + C.acc + "," + C.pur + ")", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 800, color: "#fff" }}>M</div>
           <div>
-            <div style={{ fontSize: 17, fontWeight: 800, letterSpacing: -0.3 }}>Masterplan — Dashboard de Mídia</div>
-            <div style={{ fontSize: 11, color: C.mut }}>Período: 01 a 30 de Abril de 2026</div>
+            <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: -0.3 }}>Masterplan — Dashboard de Mídia</div>
+            <div style={{ fontSize: 14, color: C.mut }}>Comparativo: Março vs Abril 2026</div>
           </div>
         </div>
         <div style={{ display: "flex", gap: 2, overflowX: "auto" }}>
@@ -814,7 +965,7 @@ export default function Dashboard() {
                   background: tab === t.id ? "rgba(59,130,246,0.08)" : "transparent",
                   color: tab === t.id ? C.acc : C.dim,
                   cursor: "pointer",
-                  fontSize: 12,
+                  fontSize: 15,
                   fontWeight: tab === t.id ? 700 : 500,
                   whiteSpace: "nowrap",
                   borderRadius: "7px 7px 0 0",
